@@ -1,0 +1,21 @@
+with grouped_cte AS
+(
+SELECT candidate_id,
+      string_agg(DISTINCT skill, ',') as skill_concat
+from candidates
+group by 1
+)
+
+select candidate_id
+from grouped_cte
+where  skill_concat Like '%Python%'
+AND skill_concat Like '%Tableau%'
+AND skill_concat Like '%PostgreSQL%';
+
+-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+SELECT candidate_id
+from candidates
+where skill in ('Python', 'Tableau', 'PostgreSQL')
+group by candidate_id
+having count(distinct skill) = 3;
