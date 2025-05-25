@@ -1,0 +1,17 @@
+select pages.page_id from page_likes 
+right join pages
+using(page_id)
+where liked_date IS NULL;
+
+select pages.page_id
+from pages
+where not exists(
+Select 1
+from page_likes
+where pages.page_id = page_likes.page_id and page_likes.liked_date is not null)
+order by 1 DESC
+
+
+The second method works better with large datasets 
+especially when there' an index built on page_id
+Also Not exists is immune to null values
