@@ -1,0 +1,7 @@
+select sender_id,
+count(*) as message_count
+from messages
+where sent_date between '08-01-2022' and '08-31-2022'
+group by sender_id
+order by 2 desc
+limit 2
