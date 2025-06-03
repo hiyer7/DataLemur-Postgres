@@ -1,0 +1,6 @@
+select count(*) as duplicate_companies
+FROM
+(select company_id, title, count(title) as jobs_count
+from job_listings
+group by 1, 2
+having count(title) > 1) tbl1;
