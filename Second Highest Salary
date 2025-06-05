@@ -1,0 +1,10 @@
+with rank_cte as
+(SELECT 
+salary,
+dense_rank() over (order by salary desc) drank
+from employee
+)
+
+select salary as second_highest_salary
+from rank_cte
+where drank = 2;
