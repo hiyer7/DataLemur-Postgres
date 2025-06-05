@@ -8,3 +8,10 @@ from employee
 select salary as second_highest_salary
 from rank_cte
 where drank = 2;
+
+================================================
+
+select distinct(max(salary))
+from employee
+where salary != 
+(select max(salary) from employee)
