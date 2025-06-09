@@ -1,0 +1,17 @@
+
+with dense_rank_employee AS
+(select department_name,
+       name,
+       salary,
+       dense_rank() over (partition by department_name order by salary desc) as drnk
+from employee
+join department
+using (department_id)
+)
+
+select department_name,
+       name,
+       salary
+from dense_rank_employee
+where drnk <= 3
+order by 1 asc,3 desc, 2 asc
