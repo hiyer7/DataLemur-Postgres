@@ -1,0 +1,6 @@
+select customer_id
+from customer_contracts
+join products
+using(product_id)
+group by customer_id
+having count(distinct product_category) = (select count(distinct product_category) from products);
