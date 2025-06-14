@@ -1,0 +1,20 @@
+WITH ordered_data AS (
+  SELECT 
+    order_id,
+    item,
+    LEAD(item) OVER (ORDER BY order_id) AS next_item,
+    LAG(item) OVER (ORDER BY order_id) AS prev_item,
+    LEAD(order_id) OVER (ORDER BY order_id) AS next_order,
+    ROW_NUMBER() OVER (ORDER BY order_id DESC) = 1 AS is_last
+  FROM orders
+)
+
+SELECT 
+  order_id,
+  CASE
+    WHEN MOD(order_id, 2) = 1 AND is_last THEN item
+    WHEN MOD(order_id, 2) = 1 THEN next_item
+    ELSE prev_item
+  END AS corrected_item
+FROM ordered_data
+ORDER BY order_id;
