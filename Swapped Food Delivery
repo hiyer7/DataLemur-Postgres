@@ -1,20 +1,18 @@
-WITH ordered_data AS (
-  SELECT 
-    order_id,
-    item,
-    LEAD(item) OVER (ORDER BY order_id) AS next_item,
-    LAG(item) OVER (ORDER BY order_id) AS prev_item,
-    LEAD(order_id) OVER (ORDER BY order_id) AS next_order,
-    ROW_NUMBER() OVER (ORDER BY order_id DESC) = 1 AS is_last
-  FROM orders
+with ordered_cte AS
+(
+  select order_id,
+         item,
+         lead(item) over(order by order_id) as lead_item,
+         lag(item)  over(order by order_id) as lag_item,
+         lag(order_id) over(order by order_id) as next_id,
+         row_number()  over(order by order_id desc) = 1 as last_item
+  from orders
 )
 
-SELECT 
-  order_id,
-  CASE
-    WHEN MOD(order_id, 2) = 1 AND is_last THEN item
-    WHEN MOD(order_id, 2) = 1 THEN next_item
-    ELSE prev_item
-  END AS corrected_item
-FROM ordered_data
-ORDER BY order_id;
+select order_id as corrected_order_id,
+        CASE
+        when mod(order_id, 2) = 1 and last_item then item
+        when mod(order_id, 2) = 1 then lead_item
+        else lag_item
+        end as item
+        from ordered_cte
